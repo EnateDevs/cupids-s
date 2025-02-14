@@ -124,7 +124,7 @@ const CupidGlitchedPuzzle = () => {
         ))}
       </div>
       <div className="header-section">
-        <h1 className="glitch" data-text="CUPID'S PUZZLE">CUPID'S PUZZLE</h1>
+        <h1 className="glitch" data-text="CUPID&apos;S GAME">CUPID&apos;S GAME</h1>
         <p className="glitch" data-text="Decrypt the secrets, translate the unknown, assemble the shards of truth...">
           Decrypt the secrets, translate the unknown, assemble the shards of truth...
         </p>
@@ -172,11 +172,11 @@ const CupidGlitchedPuzzle = () => {
         <p className="glitch" data-text="Now fuse your revelations into one message.">
           Now fuse your revelations into one message.
         </p>
-        <p className="glitch" data-text='Hint: They form the phrase "[Crypto Answer], [Translation Answer]"'>
-          Hint: They form the phrase "[Crypto Answer], [Translation Answer]"
+        <p className="glitch" data-text="Hint: They form the phrase &quot;[Crypto Answer], [Translation Answer]&quot;">
+          Hint: They form the phrase &quot;[Crypto Answer], [Translation Answer]&quot;
         </p>
-        <p className="glitch ts-lore" data-text="Remember: 'In the end, truth glitches through.'">
-          Remember: "In the end, truth glitches through."
+        <p className="glitch ts-lore" data-text="Remember: &quot;In the end, truth glitches through.&quot;">
+          Remember: &quot;In the end, truth glitches through.&quot;
         </p>
         <input
           type="text"
