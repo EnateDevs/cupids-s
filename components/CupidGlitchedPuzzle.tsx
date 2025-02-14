@@ -2,6 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 
+const numbers = ['2015', '2018', '2019', '∞'];
+const loveWords = ['amor', 'amore', 'amour', '愛', 'Liebe', '사랑', 'любовь', 'αγάπη', '爱', 'kärlek'];
+const endGameWords = ['fin del juego', '終局', 'fin du jeu', 'конец игры', 'spielende', '게임 끝', 'τέλος παιχνιδιού', 'fine gioco', '遊戲結束'];
+const characters = '01アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+
 const CupidGlitchedPuzzle = () => {
   const [cryptoInput, setCryptoInput] = useState('');
   const [cryptoResult, setCryptoResult] = useState('');
@@ -9,6 +14,7 @@ const CupidGlitchedPuzzle = () => {
   const [translateResult, setTranslateResult] = useState('');
   const [finalInput, setFinalInput] = useState('');
   const [finalResult, setFinalResult] = useState('');
+  const [floatingChars, setFloatingChars] = useState<Array<{id: number; char: string; left: number; delay: number}>>([]);
 
   useEffect(() => {
     gsap.from(".section", {
@@ -18,6 +24,54 @@ const CupidGlitchedPuzzle = () => {
       stagger: 0.3,
       ease: "power2.out"
     });
+
+    // Create initial floating characters
+    const initialChars = Array.from({length: 20}, (_, i) => {
+      const rand = Math.random();
+      let char;
+      if (rand < 0.1) { // 10% chance for numbers
+        char = numbers[Math.floor(Math.random() * numbers.length)];
+      } else if (rand < 0.25) { // 15% chance for love words
+        char = loveWords[Math.floor(Math.random() * loveWords.length)];
+      } else if (rand < 0.35) { // 10% chance for end game words
+        char = endGameWords[Math.floor(Math.random() * endGameWords.length)];
+      } else { // 65% chance for random characters
+        char = characters[Math.floor(Math.random() * characters.length)];
+      }
+      return {
+        id: i,
+        char: char,
+        left: Math.random() * 100,
+        delay: Math.random() * 5
+      };
+    });
+    setFloatingChars(initialChars);
+
+    // Update the interval logic
+    const interval = setInterval(() => {
+      setFloatingChars(prev => {
+        const rand = Math.random();
+        let char;
+        if (rand < 0.1) {
+          char = numbers[Math.floor(Math.random() * numbers.length)];
+        } else if (rand < 0.25) {
+          char = loveWords[Math.floor(Math.random() * loveWords.length)];
+        } else if (rand < 0.35) {
+          char = endGameWords[Math.floor(Math.random() * endGameWords.length)];
+        } else {
+          char = characters[Math.floor(Math.random() * characters.length)];
+        }
+        const newChar = {
+          id: Date.now(),
+          char: char,
+          left: Math.random() * 100,
+          delay: 0
+        };
+        return [...prev.slice(-19), newChar];
+      });
+    }, 1000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const checkCrypto = () => {
@@ -54,11 +108,27 @@ const CupidGlitchedPuzzle = () => {
   };
 
   return (
-    <div>
-      <h1 className="glitch" data-text="CUPID'S GLITCHED PUZZLE">CUPID'S GLITCHED PUZZLE</h1>
-      <p className="glitch" data-text="Decrypt the secrets, translate the unknown, assemble the shards of truth...">
-        Decrypt the secrets, translate the unknown, assemble the shards of truth...
-      </p>
+    <div className="container">
+      <div className="floating-characters">
+        {floatingChars.map(({id, char, left, delay}) => (
+          <div
+            key={id}
+            className="floating-char"
+            style={{
+              left: `${left}%`,
+              animationDelay: `${delay}s`
+            }}
+          >
+            {char}
+          </div>
+        ))}
+      </div>
+      <div className="header-section">
+        <h1 className="glitch" data-text="CUPID'S PUZZLE">CUPID'S PUZZLE</h1>
+        <p className="glitch" data-text="Decrypt the secrets, translate the unknown, assemble the shards of truth...">
+          Decrypt the secrets, translate the unknown, assemble the shards of truth...
+        </p>
+      </div>
 
       {/* Layer 1: Cryptography Puzzle */}
       <div className="section" id="crypto-section">
@@ -120,9 +190,28 @@ const CupidGlitchedPuzzle = () => {
       </div>
 
       <style jsx>{`
-        h1, h2 {
-          color: #ff0000;
-          text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+        .container {
+          text-align: center;
+          padding: 20px;
+        }
+        .header-section {
+          margin: 0 auto;
+          max-width: 800px;
+          padding: 20px 0 40px;
+        }
+        h1 {
+          font-size: 2.5em;
+          margin-bottom: 20px;
+        }
+        h1.glitch {
+          width: 100%;
+          text-align: center;
+          margin: 0 auto 20px;
+        }
+        .header-section p {
+          font-size: 1.3em;
+          max-width: 600px;
+          margin: 0 auto;
         }
         .section {
           background: #000;
@@ -239,6 +328,45 @@ const CupidGlitchedPuzzle = () => {
         }
         .section:hover {
           animation: flicker 0.5s infinite;
+        }
+        .floating-characters {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 1;
+          overflow: hidden;
+        }
+        .floating-char {
+          position: absolute;
+          color: #ff0000;
+          opacity: 0.5;
+          font-size: 1.2em;
+          animation: float 8s linear infinite;
+          text-shadow: 0 0 5px #ff0000;
+        }
+        @keyframes float {
+          0% {
+            transform: translateY(100vh);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.5;
+          }
+          90% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100px);
+            opacity: 0;
+          }
+        }
+        /* Make sure content appears above floating characters */
+        .header-section, .section {
+          position: relative;
+          z-index: 2;
         }
       `}</style>
     </div>
